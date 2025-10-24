@@ -90,5 +90,55 @@ class CalculatorTest {
 
 
     //TODO hier weitere Tests erstellen
+    @Test
+    @DisplayName("should display result after subtracting two positive numbers")
+    void testSubtraction() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(9);
+        calc.pressBinaryOperationKey("-");
+        calc.pressDigitKey(4);
+        calc.pressEqualsKey();
+
+        String expected = "5";
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    @DisplayName("should display zero when multiplying any number by zero")
+    void testMultiplicationByZero() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(8);
+        calc.pressBinaryOperationKey("x");
+        calc.pressDigitKey(0);
+        calc.pressEqualsKey();
+
+        String expected = "0";
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    @DisplayName("should do nothing when equals is pressed without prior operation")
+    void testEqualsWithoutOperationDoesNothing() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(4);
+        calc.pressEqualsKey(); // soll bei equalsKey nicht crashen oder fehler anzeigen
+
+        assertEquals("4", calc.readScreen());
+    }
+    /*@Test
+    @DisplayName("should display error when inverting zero")
+    void testInverseOfZeroShowsError() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(0);
+        calc.pressUnaryOperationKey("1/x");
+
+        assertEquals("Error", calc.readScreen());
+    }*/
 }
 
