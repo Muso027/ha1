@@ -71,7 +71,7 @@ public class Calculator {
      * der Bildschirminhalt mit dem Ergebnis aktualisiert.
      * @param operation "√" für Quadratwurzel, "%" für Prozent, "1/x" für Inversion
      */
-   /* public void pressUnaryOperationKey(String operation) {
+    public void pressUnaryOperationKey(String operation) {
         latestValue = Double.parseDouble(screen);
         latestOperation = operation;
         double current = Double.parseDouble(screen);
@@ -86,7 +86,7 @@ public class Calculator {
             screen = "Error";
         }
         if (screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
-    }*/
+    }
 
     /*public void pressUnaryOperationKey(String operation) {
         latestValue = Double.parseDouble(screen);
