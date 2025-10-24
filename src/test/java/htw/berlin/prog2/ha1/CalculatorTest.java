@@ -130,7 +130,7 @@ class CalculatorTest {
 
         assertEquals("4", calc.readScreen());
     }
-    /*@Test
+    @Test
     @DisplayName("should display error when inverting zero")
     void testInverseOfZeroShowsError() {
         Calculator calc = new Calculator();
@@ -139,6 +139,6 @@ class CalculatorTest {
         calc.pressUnaryOperationKey("1/x");
 
         assertEquals("Error", calc.readScreen());
-    }*/
+    }
 }
 
