@@ -71,7 +71,24 @@ public class Calculator {
      * der Bildschirminhalt mit dem Ergebnis aktualisiert.
      * @param operation "√" für Quadratwurzel, "%" für Prozent, "1/x" für Inversion
      */
-    public void pressUnaryOperationKey(String operation) {
+   /* public void pressUnaryOperationKey(String operation) {
+        latestValue = Double.parseDouble(screen);
+        latestOperation = operation;
+        double current = Double.parseDouble(screen);
+        double result = switch (operation) {
+            case "√" -> Math.sqrt(current);
+            case "%" -> current / 100;
+            case "1/x" -> current == 0.0 ? Double.POSITIVE_INFINITY : 1 / current;
+            default -> throw new IllegalArgumentException();
+        };
+        screen = Double.toString(result);
+        if (screen.equals("NaN") || screen.equals("Infinity") || screen.equals("-Infinity")) {
+            screen = "Error";
+        }
+        if (screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+    }*/
+
+    /*public void pressUnaryOperationKey(String operation) {
         latestValue = Double.parseDouble(screen);
         latestOperation = operation;
         var result = switch(operation) {
@@ -84,7 +101,28 @@ public class Calculator {
         if(screen.equals("NaN")) screen = "Error";
         if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
 
-    }
+    }*/
+    /*public void pressEqualsKey() {
+        if (latestOperation == null || latestOperation.isEmpty()) {
+            // nichts tun
+            return;
+        }
+        double rhs = Double.parseDouble(screen);
+        double result = switch (latestOperation) {
+            case "+" -> latestValue + rhs;
+            case "-" -> latestValue - rhs;
+            case "x" -> latestValue * rhs;
+            case "/" -> latestValue / rhs;
+            default -> {
+                // equals nach unärer Op sollte auch nichts crashen
+                return;
+            }
+        };
+        screen = Double.toString(result);
+        if (screen.equals("Infinity") || screen.equals("-Infinity")) screen = "Error";
+        if (screen.endsWith(".0")) screen = screen.substring(0, screen.length() - 2);
+        if (screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 11); // max 11 inkl. Punkt
+    }*/
 
     /**
      * Empfängt den Befehl der gedrückten Dezimaltrennzeichentaste, im Englischen üblicherweise "."
@@ -118,16 +156,53 @@ public class Calculator {
      * und das Ergebnis direkt angezeigt.
      */
     public void pressEqualsKey() {
-        var result = switch(latestOperation) {
-            case "+" -> latestValue + Double.parseDouble(screen);
-            case "-" -> latestValue - Double.parseDouble(screen);
-            case "x" -> latestValue * Double.parseDouble(screen);
-            case "/" -> latestValue / Double.parseDouble(screen);
-            default -> throw new IllegalArgumentException();
-        };
+        // Falls keine binäre Operation gesetzt ist (oder zuletzt eine unäre): nichts tun
+        if (latestOperation == null || latestOperation.isEmpty()
+                || latestOperation.equals("√") || latestOperation.equals("%") || latestOperation.equals("1/x")) {
+            return;
+        }
+
+        double rhs;
+        try {
+            rhs = Double.parseDouble(screen);
+        } catch (NumberFormatException e) {
+            // z.B. wenn "Error" auf dem Screen steht
+            return;
+        }
+
+        double result;
+        switch (latestOperation) {
+            case "+":
+                result = latestValue + rhs;
+                break;
+            case "-":
+                result = latestValue - rhs;
+                break;
+            case "x":
+                result = latestValue * rhs;
+                break;
+            case "/":
+                if (rhs == 0.0) {
+                    screen = "Error";
+                    latestOperation = "";
+                    return;
+                }
+                result = latestValue / rhs;
+                break;
+            default:
+                return; // sicherheitshalber
+        }
+
         screen = Double.toString(result);
-        if(screen.equals("Infinity")) screen = "Error";
-        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
-        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+
+        // Fehlerzustände → "Error"
+        if (screen.equals("Infinity") || screen.equals("-Infinity") || screen.equals("NaN")) {
+            screen = "Error";
+        }
+
+        // Schönes Format
+        if (screen.endsWith(".0")) screen = screen.substring(0, screen.length() - 2);
+        if (screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 11);
     }
 }
+
